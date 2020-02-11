@@ -50,6 +50,6 @@ expApp.get('/', function (req, res) {
  res.send('Hello World!');
 });
 expApp.listen(port, function () {
- expressApp.post('/fulfillment', app);
+ expApp.post('/fulfillment', app);
  console.log('Example app listening on port !');
 });
