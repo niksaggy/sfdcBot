@@ -32,7 +32,7 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 const app = dialogflow();
 const expApp = express();
 
-app.intent('testIntent', (conv) => {
+app.intent('Default Welcome Intent', (conv) => {
 	
 	conv.ask(new SimpleResponse({
 		speech:'Hi, how is it going? You are now logged into your personal dev org',
