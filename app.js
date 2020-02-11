@@ -25,13 +25,8 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 	console.log("Org ID: " + userInfo.organizationId);
 });
 
-var app = express();
-	app.get('/', function (req, res) {
-	 res.send('Hello World!');
-	});
-	app.listen(port, function () {
-	 console.log('Example app listening on port !');
-});
+
+
 
 //app instance
 const app = dialogflow();
@@ -41,4 +36,11 @@ app.intent('Default Welcome Intent', (conv) => {
 		speech:'Hi, how is it going? You are now logged into your personal dev org',
 		text:'Hi, how is it going? You are now logged into your personal dev org',
 	}));
+});
+
+app.get('/', function (req, res) {
+ res.send('Hello World!');
+});
+app.listen(port, function () {
+ console.log('Example app listening on port !');
 });
