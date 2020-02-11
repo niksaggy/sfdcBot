@@ -29,9 +29,7 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 
 
 //app instance
-const app = dialogflow({
-  debug: true
-});
+const app = dialogflow();
 const expApp = express();
 
 console.log('just before intent handler');
