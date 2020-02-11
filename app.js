@@ -30,6 +30,8 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 
 //app instance
 const app = dialogflow();
+const expApp = express();
+
 app.intent('Default Welcome Intent', (conv) => {
 	
 	conv.ask(new SimpleResponse({
@@ -38,9 +40,9 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));
 });
 
-app.get('/', function (req, res) {
+expApp.get('/', function (req, res) {
  res.send('Hello World!');
 });
-app.listen(port, function () {
+expApp.listen(port, function () {
  console.log('Example app listening on port !');
 });
