@@ -32,8 +32,10 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 const app = dialogflow();
 const expApp = express();
 
+console.log('just before intent handler');
+
 app.intent('Default Welcome Intent', (conv) => {
-console.log('inside intent handler');	
+	
 	conv.ask(new SimpleResponse({
 		speech:'Hi, how is it going? You are now logged into your personal dev org',
 		text:'Hi, how is it going? You are now logged into your personal dev org',
