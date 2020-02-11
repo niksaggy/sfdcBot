@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require("body-parser");
 const jsforce = require('jsforce');
 const { dialogflow } = require('actions-on-google');
 const {
@@ -32,8 +33,8 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 const app = dialogflow({
   debug: true
 });
-const expApp = express();
 
+const expApp = express().use(bodyParser.json());
 console.log('just before intent handler');
 
 app.intent('Default Welcome Intent', (conv) => {
@@ -44,9 +45,11 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));
 });
 
+
 expApp.get('/', function (req, res) {
  res.send('Hello World!');
 });
 expApp.listen(port, function () {
+ expressApp.post('/fulfillment', app);
  console.log('Example app listening on port !');
 });
