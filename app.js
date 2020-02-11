@@ -1,4 +1,4 @@
-const express = require(‘express’);
+const express = require('express');
 const jsforce = require('jsforce');
 const { dialogflow } = require('actions-on-google');
 const {
@@ -26,11 +26,11 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 });
 
 var app = express();
-	app.get(‘/’, function (req, res) {
-	 res.send(JSON.stringify({ Hello: ‘World’}));
+	app.get('/', function (req, res) {
+	 res.send('Hello World!');
 	});
 	app.listen(port, function () {
-	 console.log(`Example app listening on port !`);
+	 console.log('Example app listening on port !');
 });
 
 //app instance
