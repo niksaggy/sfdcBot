@@ -1,6 +1,8 @@
 const express = require('express');
 const jsforce = require('jsforce');
-const { dialogflow } = require('actions-on-google');
+const app = dialogflow({
+  debug: true
+});
 const {
   SimpleResponse,
   BasicCard,
