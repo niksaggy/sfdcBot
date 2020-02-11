@@ -1,6 +1,6 @@
 const express = require('express');
 const jsforce = require('jsforce');
-
+const { dialogflow } = require('actions-on-google');
 const {
   SimpleResponse,
   BasicCard,
@@ -29,7 +29,9 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 
 
 //app instance
-const app = dialogflow();
+const app = dialogflow({
+  debug: true
+});
 const expApp = express();
 
 console.log('just before intent handler');
