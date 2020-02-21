@@ -66,7 +66,7 @@ app.intent('Default Welcome Intent', (conv) => {
 });
 
 app.intent('Get Opportunity Info', (conv) => {
-	console.log('**conv** ' +conv.parameters);
+	console.log('**conv parameters** ' +conv.parameters);
 	return oppInfo().then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
