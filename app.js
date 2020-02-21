@@ -64,11 +64,12 @@ app.intent('Default Welcome Intent', (conv) => {
 });
 
 app.intent('Get Opportunity Info', (conv) => {
-  return oppInfo().then((resp) => {
-    conv.ask(new SimpleResponse({
-		speech:resp,
-		text:resp,
-	}));
+	return oppInfo().then((resp) => {
+		conv.ask(new SimpleResponse({
+			speech:resp,
+			text:resp,
+		}));
+	});
 });
 
 
