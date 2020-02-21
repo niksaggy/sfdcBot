@@ -48,7 +48,7 @@ var oppInfo = function(oppName,fieldNames){
 				reject(err);
 			}
 			else{
-				resolve(result);
+				resolve(res);
 			}
 		});
 	});
