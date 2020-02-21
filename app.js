@@ -40,7 +40,7 @@ const app = dialogflow({
 
 const expApp = express().use(bodyParser.json());
 
-var oppInfo = function(conv){
+var oppInfo = function(oppName,fieldNames){
 	return new Promise((resolve,reject)=>{
 		console.log(options);
 		conn.apex.get("/OppInfoSrvc?oppName="+conv.oppName+"&fieldNames="+conv.fieldNames,options,function(err, res){
@@ -63,7 +63,7 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));
 });
 
-app.intent('Get Opportunity Info', (conv) => {
+app.intent('Get Opportunity Info', (conv.oppName,conv.fieldNames) => {
 	return oppInfo().then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
