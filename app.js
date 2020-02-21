@@ -43,8 +43,8 @@ const expApp = express().use(bodyParser.json());
 var oppInfo = function(conv){
 	return new Promise((resolve,reject)=>{
 		console.log(options);
-		console.log(conv);
-		//console.log(conv.fieldNames);
+		console.log(conv.parameters.oppName);
+		console.log(conv.parameters.fieldNames);
 		conn.apex.get("/OppInfoSrvc?oppName="+conv.oppName+"&fieldNames="+conv.fieldNames,options,function(err, res){
 			if (err) {
 				reject(err);
