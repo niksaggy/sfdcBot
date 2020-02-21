@@ -40,12 +40,10 @@ const app = dialogflow({
 
 const expApp = express().use(bodyParser.json());
 
-var oppInfo = function(conv){
+var oppInfo = function(oppName,fieldNames){
 	return new Promise((resolve,reject)=>{
 		console.log('**options** ' +options);
-		console.log('**conv** ' +conv.parameters);
-		//console.log(conv.parameters);
-		conn.apex.get("/OppInfoSrvc?oppName="+conv.oppName+"&fieldNames="+conv.fieldNames,options,function(err, res){
+		conn.apex.get("/OppInfoSrvc?oppName="+oppName+"&fieldNames="+fieldNames,options,function(err, res){
 			if (err) {
 				reject(err);
 			}
@@ -65,9 +63,15 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));
 });
 
-app.intent('Get Opportunity Info', (conv) => {
-	console.log('**conv parameters** ' +conv.parameters);
-	return oppInfo().then((resp) => {
+app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
+	
+	const oppName = conv.parameters['oppName'];
+	const fieldNames = conv.parameters['fieldNames'];
+	
+	console.log('**conv parameters oppName** ' +oppName);
+	console.log('**conv parameters fieldNames** ' +fieldNames);
+	
+	return oppInfo(oppName,fieldNames).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
