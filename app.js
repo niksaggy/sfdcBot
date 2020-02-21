@@ -65,13 +65,13 @@ app.intent('Default Welcome Intent', (conv) => {
 
 app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	
-	const oppName = conv.parameters['oppName'];
-	const fieldNames = conv.parameters['fieldNames'];
+	const opName = conv.parameters['oppName'];
+	const fldNames = conv.parameters['fieldNames'];
 	
-	console.log('**conv parameters oppName** ' +oppName);
-	console.log('**conv parameters fieldNames** ' +fieldNames);
+	console.log('**conv parameters oppName** ' +opName);
+	console.log('**conv parameters fieldNames** ' +fldNames);
 	
-	return oppInfo(oppName,fieldNames).then((resp) => {
+	return oppInfo(opName,fldNames).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
