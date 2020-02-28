@@ -57,7 +57,7 @@ var oppInfo = function(oppName,fieldNames){
 
 var createTask = function(oppName,taskSubject,taskPriority,conFName){
 	return new Promise((resolve,reject)=>{
-		console.log('**options** ' +options);
+		
 		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
 			if (err) {
 				reject(err);
@@ -71,8 +71,22 @@ var createTask = function(oppName,taskSubject,taskPriority,conFName){
 
 var logMeeting = function(meetingNotes,oppName,conFName){
 	return new Promise((resolve,reject)=>{
-		console.log('**options** ' +options);
+		
 		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName,options,function(err, res){
+			if (err) {
+				reject(err);
+			}
+			else{
+				resolve(res);
+			}
+		});
+	});
+};
+
+var updateOppty = function(fieldNames,fieldValues,oppName){
+	return new Promise((resolve,reject)=>{
+		
+		conn.apex.get("/updateOpptyInfo?oppName="+oppName+"&fieldNames="+fieldNames+"&fieldValues="+fieldValues,options,function(err, res){
 			if (err) {
 				reject(err);
 			}
@@ -138,11 +152,25 @@ app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
 	});
 });
 
+app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
+	
+	const fldNames = conv.parameters['fieldNames'];
+	const fldVal= conv.parameters['fieldValues'];
+	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
+	
+	return updateOppty(fldNames,fldVal,opName).then((resp) => {
+		conv.ask(new SimpleResponse({
+			speech:resp,
+			text:resp,
+		}));
+	});
+});
+
 
 expApp.get('/', function (req, res) {
- res.send('Hello World!');
+	res.send('Hello World!');
 });
 expApp.listen(port, function () {
- expApp.post('/fulfillment', app);
- console.log('Example app listening on port !');
+	expApp.post('/fulfillment', app);
+	console.log('Example app listening on port !');
 });
