@@ -130,7 +130,7 @@ app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
 	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
 	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
 	
-	return logMeeting(meetingNt,opName,tskPr,conFName).then((resp) => {
+	return logMeeting(meetingNt,opName,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
