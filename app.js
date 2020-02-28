@@ -69,6 +69,20 @@ var createTask = function(oppName,taskSubject,taskPriority,conFName){
 	});
 };
 
+var logMeeting = function(meetingNotes,oppName,conFName){
+	return new Promise((resolve,reject)=>{
+		console.log('**options** ' +options);
+		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName,options,function(err, res){
+			if (err) {
+				reject(err);
+			}
+			else{
+				resolve(res);
+			}
+		});
+	});
+};
+
 
 app.intent('Default Welcome Intent', (conv) => {
 	
@@ -102,6 +116,20 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	const conFName = conv.parameters['contactFirstName'];
 	
 	return createTask(opName,tskSbj,tskPr,conFName).then((resp) => {
+		conv.ask(new SimpleResponse({
+			speech:resp,
+			text:resp,
+		}));
+	});
+});
+
+app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
+	
+	const meetingNt = conv.parameters['meetingNotes'];
+	const opName = context.get('CreateTaskonOpportunity-followup').params['oppName'];
+	const conFName = context.get('CreateTaskonOpportunity-followup').params['contactFirstName']
+	
+	return logMeeting(meetingNt,opName,tskPr,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
