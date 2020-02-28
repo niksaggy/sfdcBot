@@ -55,10 +55,10 @@ var oppInfo = function(oppName,fieldNames){
 };
 
 
-var createTask = function(oppName,taskSubject,taskPriority){
+var createTask = function(oppName,taskSubject,taskPriority,conFName){
 	return new Promise((resolve,reject)=>{
 		console.log('**options** ' +options);
-		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority,options,function(err, res){
+		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
 			if (err) {
 				reject(err);
 			}
@@ -94,14 +94,14 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	});
 });
 
-app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority} ) => {
+app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority,contactFirstName} ) => {
 	
 	const opName = conv.parameters['oppName'];
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
+	const conFName = conv.parameters['contactFirstName'];
 	
-	
-	return createTask(opName,tskSbj,tskPr).then((resp) => {
+	return createTask(opName,tskSbj,tskPr,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
