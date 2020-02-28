@@ -127,8 +127,8 @@ app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
 	
 	const meetingNt = conv.parameters['meetingNotes'];
 	console.log(conv.contexts);
-	const opName = conv.contexts.get('CreateTaskonOpportunity-followup').params['oppName'];
-	const conFName = conv.contexts.get('CreateTaskonOpportunity-followup').params['contactFirstName']
+	const opName = conv.contexts.get('CreateTaskonOpportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('CreateTaskonOpportunity-followup').parameters['contactFirstName']
 	
 	return logMeeting(meetingNt,opName,tskPr,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
