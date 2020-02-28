@@ -163,6 +163,7 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 			speech:resp,
 			text:resp,
 		}));
+		conv.ask('Setup a follow up meeting');
 	});
 });
 
