@@ -192,15 +192,15 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 			text:resp,
 		}));
 		
-		conv.ask('Do you want to setup a follow up meeting later today?');
-  		conv.ask(new Suggestions('Yes', 'No'));
+		
+  		conv.ask(new Suggestions('setup a follow up meeting later today', 'setup a follow up meeting tomorrow'));
 	});
 });
 
-app.intent('Update Opportunity - yes', (conv) => {
+app.intent('setup a follow up meeting later today', (conv) => {
 	
-	const opName = conv.contexts.get('updateOpportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('updateOpportunity-followup').parameters['contactFirstName']
+	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
 	
 	return logMeetingToday('follow up meeting',opName,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
