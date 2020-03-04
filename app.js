@@ -197,7 +197,7 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 	});
 });
 
-app.intent('Setup follow up meeting later today', (conv) => {
+app.intent('Update Opportunity - yes', (conv) => {
 	
 	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
 	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
