@@ -97,19 +97,6 @@ var logMeetingToday = function(meetingNotes,oppName,conFName){
 	});
 };
 
-var logMeetingToday = function(meetingNotes,oppName,conFName){
-	return new Promise((resolve,reject)=>{
-		var followUpTmr = 'Yes';
-		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName+"&followUpTmrw="+followUpTmr,options,function(err, res){
-			if (err) {
-				reject(err);
-			}
-			else{
-				resolve(res);
-			}
-		});
-	});
-};
 
 var updateOppty = function(fieldNames,fieldValues,oppName){
 	return new Promise((resolve,reject)=>{
@@ -197,10 +184,10 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 	});
 });
 
-app.intent('setup a follow up meeting later today', (conv) => {
+app.intent('Update Opportunity - yes', (conv) => {
 	
-	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
+	const opName = conv.contexts.get('updateOpportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('updateOpportunity-followup').parameters['contactFirstName']
 	
 	return logMeetingToday('follow up meeting',opName,conFName).then((resp) => {
 		conv.ask(new SimpleResponse({
@@ -210,18 +197,6 @@ app.intent('setup a follow up meeting later today', (conv) => {
 	});
 });
 
-app.intent('Setup a follow up meeting tomorrow', (conv) => {
-	
-	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
-	
-	return logMeetingTmrw('follow up meeting',opName,conFName).then((resp) => {
-		conv.ask(new SimpleResponse({
-			speech:resp,
-			text:resp,
-		}));
-	});
-});
 
 expApp.get('/', function (req, res) {
 	res.send('Hello World!');
