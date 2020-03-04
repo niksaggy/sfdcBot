@@ -83,6 +83,34 @@ var logMeeting = function(meetingNotes,oppName,conFName){
 	});
 };
 
+var logMeetingToday = function(meetingNotes,oppName,conFName){
+	return new Promise((resolve,reject)=>{
+		var followUpLtrTdy = 'Yes';
+		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName+"&followUpLater="+followUpLtrTdy,options,function(err, res){
+			if (err) {
+				reject(err);
+			}
+			else{
+				resolve(res);
+			}
+		});
+	});
+};
+
+var logMeetingToday = function(meetingNotes,oppName,conFName){
+	return new Promise((resolve,reject)=>{
+		var followUpTmr = 'Yes';
+		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName+"&followUpTmrw="+followUpTmr,options,function(err, res){
+			if (err) {
+				reject(err);
+			}
+			else{
+				resolve(res);
+			}
+		});
+	});
+};
+
 var updateOppty = function(fieldNames,fieldValues,oppName){
 	return new Promise((resolve,reject)=>{
 		
@@ -168,6 +196,31 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 	});
 });
 
+app.intent('Setup follow up meeting later today', (conv) => {
+	
+	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
+	
+	return logMeetingToday('follow up meeting',opName,conFName).then((resp) => {
+		conv.ask(new SimpleResponse({
+			speech:resp,
+			text:resp,
+		}));
+	});
+});
+
+app.intent('Setup a follow up meeting tomorrow', (conv) => {
+	
+	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
+	
+	return logMeetingTmrw('follow up meeting',opName,conFName).then((resp) => {
+		conv.ask(new SimpleResponse({
+			speech:resp,
+			text:resp,
+		}));
+	});
+});
 
 expApp.get('/', function (req, res) {
 	res.send('Hello World!');
