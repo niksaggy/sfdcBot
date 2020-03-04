@@ -192,7 +192,7 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 			text:resp,
 		}));
 		
-		
+		conv.ask('Would you like to setup a follow up meeting later today');
   		conv.ask(new Suggestions('setup a follow up meeting later today', 'setup a follow up meeting tomorrow'));
 	});
 });
