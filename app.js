@@ -16,6 +16,12 @@ var conn = new jsforce.Connection({
   loginUrl : 'https://login.salesforce.com'
 });
 
+
+//app instance
+const app = dialogflow({
+  debug: true
+});
+
 var oauth2 = new jsforce.OAuth2({
   
   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -70,10 +76,7 @@ app.get('/oauth2/callback', function(req, res) {
 
 
 
-//app instance
-const app = dialogflow({
-  debug: true
-});
+
 
 const expApp = express().use(bodyParser.json());
 
