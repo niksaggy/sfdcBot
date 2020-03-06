@@ -16,7 +16,44 @@ var conn = new jsforce.Connection({
   loginUrl : 'https://login.salesforce.com'
 });
 
-conn.login(process.env.username, process.env.password, function(err, userInfo) {
+var oauth2 = new jsforce.OAuth2({
+  
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  redirectUri : 'https://salesforcebot-qjksum.firebaseapp.com/__/auth/handler'
+});
+
+//
+// Get authorization url and redirect to it.
+//
+
+app.get('/oauth2/auth', function(req, res) {
+  res.redirect(oauth2.getAuthorizationUrl({ scope : 'api id web' }));
+});
+
+//
+// Pass received authorization code and get access token
+//
+app.get('/oauth2/callback', function(req, res) {
+  var conn = new jsforce.Connection({ oauth2 : oauth2 });
+  var code = req.param('code');
+  conn.authorize(code, function(err, userInfo) {
+    if (err) { return console.error(err); }
+    // Now you can get the access token, refresh token, and instance URL information.
+    // Save them to establish connection next time.
+    console.log(conn.accessToken);
+    console.log(conn.refreshToken);
+    console.log(conn.instanceUrl);
+    console.log("User ID: " + userInfo.id);
+    console.log("Org ID: " + userInfo.organizationId);
+    // ...
+    res.send('success'); // or your desired response
+	options = { Authorization: 'Bearer '+conn.accessToken};
+  });
+});
+
+
+/*conn.login(process.env.username, process.env.password, function(err, userInfo) {
 	if (err) { 
 		return console.error(err); 
 	}
@@ -28,7 +65,7 @@ conn.login(process.env.username, process.env.password, function(err, userInfo) {
 		console.log("Org ID: " + userInfo.organizationId);
 		options = { Authorization: 'Bearer '+conn.accessToken};
 	}
-});
+});*/
 
 
 
@@ -116,8 +153,8 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 app.intent('Default Welcome Intent', (conv) => {
 	
 	conv.ask(new SimpleResponse({
-		speech:'Hi, how is it going? You are now logged into your personal dev org',
-		text:'Hi, how is it going? You are now logged into your personal dev org',
+		speech:'Hi, how is it going? You are being guided to the login page',
+		text:'Hi, how is it going? You are being guided to the login page',
 	}));
 });
 
