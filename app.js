@@ -16,6 +16,7 @@ var conn = new jsforce.Connection({
   loginUrl : 'https://login.salesforce.com'
 });
 
+const expApp = express().use(bodyParser.json());
 
 //app instance
 const app = dialogflow({
@@ -33,14 +34,14 @@ var oauth2 = new jsforce.OAuth2({
 // Get authorization url and redirect to it.
 //
 
-app.get('/oauth2/auth', function(req, res) {
+expApp.get('/oauth2/auth', function(req, res) {
   res.redirect(oauth2.getAuthorizationUrl({ scope : 'api id web' }));
 });
 
 //
 // Pass received authorization code and get access token
 //
-app.get('/oauth2/callback', function(req, res) {
+expApp.get('/oauth2/callback', function(req, res) {
   var conn = new jsforce.Connection({ oauth2 : oauth2 });
   var code = req.param('code');
   conn.authorize(code, function(err, userInfo) {
@@ -73,12 +74,6 @@ app.get('/oauth2/callback', function(req, res) {
 	}
 });*/
 
-
-
-
-
-
-const expApp = express().use(bodyParser.json());
 
 var oppInfo = function(oppName,fieldNames){
 	return new Promise((resolve,reject)=>{
