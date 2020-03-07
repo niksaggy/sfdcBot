@@ -129,7 +129,7 @@ app.intent('Default Welcome Intent', (conv) => {
 	const oauth2 = new jsforce.OAuth2({
 		clientId: process.env.SALESFORCE_CONSUMER_KEY,
 		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: process.env.REDIRECT_URI
+		redirectUri: 'http://localhost:3000/oauth/callback'
 	});
 	res.redirect(oauth2.getAuthorizationUrl({}));
 	});
@@ -141,7 +141,7 @@ app.intent('Default Welcome Intent', (conv) => {
 		const oauth2 = new jsforce.OAuth2({
 		clientId: process.env.SALESFORCE_CONSUMER_KEY,
 		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: process.env.REDIRECT_URI
+		redirectUri: 'http://localhost:3000/oauth/callback'
 		});
 		
 		const conn = new jsforce.Connection({ oauth2 : oauth2 });
