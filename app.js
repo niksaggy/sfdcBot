@@ -22,39 +22,53 @@ const app = dialogflow({
   debug: true
 });
 
-var oauth2 = new jsforce.OAuth2({
+/*var oauth2 = new jsforce.OAuth2({
   
   clientID: process.env.SALESFORCE_CONSUMER_KEY,
   clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-  redirectUri : 'https://sfdcadminbot.herokuapp.com/token'
-});
+  redirectUri : '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
+
+});*/
 
 //
 // Get authorization url and redirect to it.
 //
 
 expApp.get('/oauth2/auth', function(req, res) {
-  res.redirect(oauth2.getAuthorizationUrl({ scope : 'api id web' }));
+	const oauth2 = new jsforce.OAuth2({
+		clientId: process.env.SALESFORCE_CONSUMER_KEY,
+		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
+		redirectUri: '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
+	});
+	res.redirect(oauth2.getAuthorizationUrl({}));
 });
 
 //
 // Pass received authorization code and get access token
 //
-expApp.get('/oauth2/callback', function(req, res) {
-  //var conn = new jsforce.Connection({ oauth2 : oauth2 });
-  var code = req.param('code');
-  conn.authorize(code, function(err, userInfo) {
-	if (err) { return console.error(err); }
-	// Now you can get the access token, refresh token, and instance URL information.
-	// Save them to establish connection next time.
-	console.log(conn.accessToken);
-	console.log(conn.refreshToken);
-	console.log(conn.instanceUrl);
-	console.log("User ID: " + userInfo.id);
-	console.log("Org ID: " + userInfo.organizationId);
-	// ...
-	res.send('success'); // or your desired response
-	options = { Authorization: 'Bearer '+conn.accessToken};
+expApp.get('/getAccessToken', function(req,res) {
+  const oauth2 = new jsforce.OAuth2({
+    clientId: process.env.SALESFORCE_CONSUMER_KEY,
+    clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
+    redirectUri: '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
+  });
+  const conn = new jsforce.Connection({ oauth2 : oauth2 });
+  conn.authorize(req.query.code, function(err, userInfo) {
+    if (err) {
+      return console.error(err);
+    }
+    const conn2 = new jsforce.Connection({
+      instanceUrl : conn.instanceUrl,
+      accessToken : conn.accessToken
+    });
+    conn2.identity(function(err, res) {
+      if (err) { return console.error(err); }
+      console.log("user ID: " + res.user_id);
+      console.log("organization ID: " + res.organization_id);
+      console.log("username: " + res.username);
+      console.log("display name: " + res.display_name);
+	  options = { Authorization: 'Bearer '+conn.accessToken};
+    });
   });
 });
 
