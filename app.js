@@ -13,8 +13,6 @@ const {
 var options;
 var port = process.env.PORT || 3000;
 
-var conn = new jsforce.Connection({ oauth2 : oauth2 });
-
 const expApp = express().use(bodyParser.json());
 
 //app instance
