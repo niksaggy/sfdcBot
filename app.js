@@ -27,7 +27,7 @@ var oauth2 = new jsforce.OAuth2({
   
   clientID: process.env.SALESFORCE_CONSUMER_KEY,
   clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-  redirectUri : 'http://localhost:3000/oauth/callback'
+  redirectUri : 'https://node-js-google-sfdc-app.herokuapp.com/token'
 });
 
 
