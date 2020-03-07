@@ -27,7 +27,7 @@ var oauth2 = new jsforce.OAuth2({
   
   clientID: process.env.SALESFORCE_CONSUMER_KEY,
   clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-  redirectUri : 'https://salesforcebot-qjksum.firebaseapp.com/__/auth/handler'
+  redirectUri : 'http://localhost:3000/oauth/callback'
 });
 
 
