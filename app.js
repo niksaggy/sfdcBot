@@ -38,7 +38,7 @@ expApp.get('/oauth2/auth', function(req, res) {
 	const oauth2 = new jsforce.OAuth2({
 		clientId: process.env.SALESFORCE_CONSUMER_KEY,
 		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
+		redirectUri: process.env.REDIRECT_URI
 	});
 	res.redirect(oauth2.getAuthorizationUrl({}));
 });
@@ -50,7 +50,7 @@ expApp.get('/getAccessToken', function(req,res) {
   const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SALESFORCE_CONSUMER_KEY,
     clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-    redirectUri: '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
+    redirectUri: process.env.REDIRECT_URI
   });
   const conn = new jsforce.Connection({ oauth2 : oauth2 });
   conn.authorize(req.query.code, function(err, userInfo) {
