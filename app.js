@@ -25,8 +25,8 @@ const app = dialogflow({
 
 var oauth2 = new jsforce.OAuth2({
   
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientID: process.env.SALESFORCE_CONSUMER_KEY,
+  clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
   redirectUri : 'https://salesforcebot-qjksum.firebaseapp.com/__/auth/handler'
 });
 
