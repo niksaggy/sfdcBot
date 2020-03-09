@@ -5,7 +5,7 @@ const { dialogflow } = require('actions-on-google');
 const {
   SimpleResponse,
   BasicCard,
-  SignIn
+  SignIn,
   Image,
   Suggestions,
   Button
