@@ -5,6 +5,7 @@ const { dialogflow } = require('actions-on-google');
 const {
   SimpleResponse,
   BasicCard,
+  SignIn
   Image,
   Suggestions,
   Button
@@ -162,7 +163,7 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 
 app.intent('Default Welcome Intent', (conv) => {
 	
-	
+	conv.ask(new SignIn());
 	
 	conv.ask(new SimpleResponse({
 		speech:'Hi, how is it going? You are being guided to the login page',
