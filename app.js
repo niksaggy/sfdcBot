@@ -62,13 +62,15 @@ expApp.get('/oauth2/auth', function(req, res) {
 // Pass received authorization code and get access token
 //
 expApp.get('/getAccessToken', function(req,res) {
+	console.log('should be here ');
 	const oauth2 = new jsforce.OAuth2({
-	clientId: process.env.SALESFORCE_CONSUMER_KEY,
-	clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-	redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
+		clientId: process.env.SALESFORCE_CONSUMER_KEY,
+		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
+		redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
 	});
 
 	const conn = new jsforce.Connection({ oauth2 : oauth2 });
+		console.og('req query code '+req.query.code);
 		conn.authorize(req.query.code, function(err, userInfo) {
 		if (err) {
 			return console.error(err);
