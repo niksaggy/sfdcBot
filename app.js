@@ -53,7 +53,7 @@ expApp.get('/oauth2/auth', function(req, res) {
 	const oauth2 = new jsforce.OAuth2({
 		clientId: process.env.SALESFORCE_CONSUMER_KEY,
 		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
+		redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth2/callback'
 	});
 	res.redirect(oauth2.getAuthorizationUrl({}));
 });
