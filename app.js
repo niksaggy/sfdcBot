@@ -86,7 +86,7 @@ expApp.get('/getAccessToken', function(req,res) {
 		  console.log("username: " + res.username);
 		  console.log("display name: " + res.display_name);
 		  options = { Authorization: 'Bearer '+conn.accessToken};
-		  //res.send('success mf');
+		  res.send('success mf');
 		});
 	});
 });
