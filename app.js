@@ -61,7 +61,7 @@ expApp.get('/oauth2/auth', function(req, res) {
 //
 // Pass received authorization code and get access token
 //
-expApp.get('/getAccessToken', function(req,res) {
+expApp.get('/oauth2/callback', function(req,res) {
 	const oauth2 = new jsforce.OAuth2({
 	clientId: process.env.SALESFORCE_CONSUMER_KEY,
 	clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
