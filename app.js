@@ -73,14 +73,18 @@ expApp.get('/getAccessToken', function(req,resp) {
 		console.log('req query code '+req.query.code);
 		conn.authorize(req.query.code, function(err, userInfo) {
 		if (err) {
-			return console.error(err);
+            console.log('Error happened at authorization-->',err);
+			return resp.send(err.message);
 		}
 		const conn2 = new jsforce.Connection({
 			instanceUrl : conn.instanceUrl,
 			accessToken : conn.accessToken
 		});
 		conn2.identity(function(err, res) {
-		if (err) { return console.error(err); }
+		if (err) { 
+            console.log('Error happened at identity-->',err);
+            return resp.send(err.message); 
+        }
 		  console.log("user ID: " + res.user_id);
 		  console.log("organization ID: " + res.organization_id);
 		  console.log("username: " + res.username);
