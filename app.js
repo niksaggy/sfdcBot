@@ -53,7 +53,7 @@ expApp.get('/oauth2/auth', function(req, res) {
 	const oauth2 = new jsforce.OAuth2({
 		clientId: process.env.SALESFORCE_CONSUMER_KEY,
 		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth2/callback'
+		redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
 	});
 	res.redirect(oauth2.getAuthorizationUrl({}));
 });
@@ -61,11 +61,11 @@ expApp.get('/oauth2/auth', function(req, res) {
 //
 // Pass received authorization code and get access token
 //
-expApp.get('/oauth2/callback', function(req,res) {
+expApp.get('/getAccessToken', function(req,res) {
 	const oauth2 = new jsforce.OAuth2({
 	clientId: process.env.SALESFORCE_CONSUMER_KEY,
 	clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-	redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth2/callback'
+	redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
 	});
 
 	const conn = new jsforce.Connection({ oauth2 : oauth2 });
@@ -84,7 +84,7 @@ expApp.get('/oauth2/callback', function(req,res) {
 		  console.log("username: " + res.username);
 		  console.log("display name: " + res.display_name);
 		  options = { Authorization: 'Bearer '+conn.accessToken};
-		  res.send('success mf');
+		  //res.send('success mf');
 		});
 	});
 });
