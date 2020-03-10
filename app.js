@@ -70,7 +70,7 @@ expApp.get('/getAccessToken', function(req,res) {
 	});
 
 	const conn = new jsforce.Connection({ oauth2 : oauth2 });
-		console.og('req query code '+req.query.code);
+		console.log('req query code '+req.query.code);
 		conn.authorize(req.query.code, function(err, userInfo) {
 		if (err) {
 			return console.error(err);
