@@ -90,7 +90,7 @@ expApp.get('/getAccessToken', function(req,resp) {
 		  console.log("username: " + res.username);
 		  console.log("display name: " + res.display_name);
 		  options = { Authorization: 'Bearer '+conn.accessToken};
-		  resp.send('success mf');
+		  resp.redirect(`https://oauth-redirect.googleusercontent.com/r/YOUR_PROJECT_ID?code=${req.query.code}&state=true`);
 		});
 	});
 	
