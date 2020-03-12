@@ -189,7 +189,7 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));*/
 });
 
-app.intent('Get SignIn Info', (conv, params, signin) => {    
+app.intent('actions_intent_SIGN_IN', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
