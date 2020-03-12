@@ -119,7 +119,7 @@ var oppInfo = function(oppName,fieldNames){
 
 var createTask = function(oppName,taskSubject,taskPriority,conFName){
 	return new Promise((resolve,reject)=>{
-		console.log('this is the access token before calling rest service: '+options);
+		console.log('this is the access token before calling rest service: '+JSON.stringify(options));
 		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
 			if (err) {
 				reject(err);
