@@ -169,6 +169,17 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 	});
 };
 
+app.intent('Get SignIn Info', (conv, params, signin) => {    
+	console.log('Sign in info Intent');    
+	console.log('Sign in content-->',signin);       
+	if (signin.status === 'OK') {         
+		const access = conv.user.access.token // possibly do something with access token         
+		conv.ask('Great, thanks for signing in! What do you want to do next?')       
+	} 
+	else {         
+		conv.ask(`I won't be able to save your data, but what do you want to do next?`)       
+	}     
+}); 
 
 app.intent('Default Welcome Intent', (conv) => {
 	
