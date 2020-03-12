@@ -169,29 +169,38 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 	});
 };
 
+
+
+app.intent('Default Welcome Intent', (conv) => {
+	
+	console.log('Request came for account link flow start');	
+    	if(!conv.user.accessToken){
+      		conv.ask(new SignIn());
+    	}
+    	else{
+        	conv.ask('You are already signed in ');
+    	}
+	
+
+	
+	/*conv.ask(new SimpleResponse({
+		speech:'Hi, how is it going? You are being guided to the login page',
+		text:'Hi, how is it going? You are being guided to the login page',
+	}));*/
+});
+
 app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
-		const access = conv.user.access.token // possibly do something with access token         
-		conv.ask('Great, thanks for signing in! What do you want to do next?')       
+		const access = conv.user.access.token   
+		options = { Authorization: 'Bearer '+access};
+		conv.ask('Hola, thanks for signing in! What do you want to do next?')       ;
 	} 
 	else {         
-		conv.ask(`I won't be able to save your data, but what do you want to do next?`)       
+		conv.ask('Something went wrong in the sign in process');       
 	}     
 }); 
-
-app.intent('Default Welcome Intent', (conv) => {
-	
-	conv.ask(new SignIn());
-	
-
-	
-	conv.ask(new SimpleResponse({
-		speech:'Hi, how is it going? You are being guided to the login page',
-		text:'Hi, how is it going? You are being guided to the login page',
-	}));
-});
 
 app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	
