@@ -21,6 +21,11 @@ const app = dialogflow({
   debug: true
 });
 
+var conn = new jsforce.Connection({
+  // you can change loginUrl to connect to sandbox or prerelease env.
+  // loginUrl : 'https://test.salesforce.com'
+});
+
 /*var oauth2 = new jsforce.OAuth2({
   
   clientID: process.env.SALESFORCE_CONSUMER_KEY,
@@ -195,6 +200,8 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	if (signin.status === 'OK') {         
 		const access = conv.user.access.token   
 		options = { Authorization: 'Bearer '+access};
+		console.log('access token: ' + access);
+		console.log('this is used for calling webservices in salesforce : ' + options);
 		conv.ask('Hola, thanks for signing in! What do you want to do next?')       ;
 	} 
 	else {         
