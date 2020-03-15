@@ -164,7 +164,7 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 
 
 
-app.intent('Default Welcome Intent', (conv) => {
+/*app.intent('Default Welcome Intent', (conv) => {
 	
 	console.log('Request came for account link flow start');	
     	if(!conv.user.accessToken){
@@ -180,7 +180,7 @@ app.intent('Default Welcome Intent', (conv) => {
 		speech:'Hi, how is it going? You are being guided to the login page',
 		text:'Hi, how is it going? You are being guided to the login page',
 	}));*/
-});
+//});
 
 /*app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
