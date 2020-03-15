@@ -21,9 +21,10 @@ const app = dialogflow({
   debug: true
 });
 
-var conn = new jsforce.Connection({
-  // you can change loginUrl to connect to sandbox or prerelease env.
-  // loginUrl : 'https://test.salesforce.com'
+const oauth2 = new jsforce.OAuth2({
+    clientId: process.env.SALESFORCE_CONSUMER_KEY,
+    clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
+    redirectUri: 'https://sfdcadminbot.herokuapp.com/getaccesstoken'
 });
 
 /*var oauth2 = new jsforce.OAuth2({
@@ -54,51 +55,38 @@ var conn = new jsforce.Connection({
 	}
 });*/
 
+//Get authorization code
 expApp.get('/oauth2/auth', function(req, res) {
-	const oauth2 = new jsforce.OAuth2({
-		clientId: process.env.SALESFORCE_CONSUMER_KEY,
-		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
-	});
+	
+	console.log('this is the first request: '+req);
 	res.redirect(oauth2.getAuthorizationUrl({}));
+	
 });
 
 //
 // Pass received authorization code and get access token
 //
 expApp.get('/getAccessToken', function(req,resp) {
-	console.log('should be here ');
-	const oauth2 = new jsforce.OAuth2({
-		clientId: process.env.SALESFORCE_CONSUMER_KEY,
-		clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-		redirectUri: 'https://sfdcadminbot.herokuapp.com/getAccessToken'
-	});
-
+	
+	console.log('should be here after getting the authorization code');
 	const conn = new jsforce.Connection({ oauth2 : oauth2 });
-		console.log('req query code '+req.query.code);
-		conn.authorize(req.query.code, function(err, userInfo) {
+	console.log('req query: '+req);
+	console.log('req query code '+req.query.code);
+	
+	conn.authorize(req.query.code, function(err, userInfo) {
 		if (err) {
             console.log('Error happened at authorization-->',err);
 			return resp.send(err.message);
 		}
-		const conn2 = new jsforce.Connection({
-			instanceUrl : conn.instanceUrl,
-			accessToken : conn.accessToken
-		});
-		conn2.identity(function(err, res) {
-		if (err) { 
-            console.log('Error happened at identity-->',err);
-            return resp.send(err.message); 
-        }
-		  console.log("user ID: " + res.user_id);
-		  console.log("organization ID: " + res.organization_id);
-		  console.log("username: " + res.username);
-		  console.log("display name: " + res.display_name);
-		  options = { Authorization: 'Bearer '+conn.accessToken};
-		  resp.redirect(`https://oauth-redirect.googleusercontent.com/r/salesforcebot-qjksum?code=${req.query.code}&state=true`);
-		});
+		
+		console.log("user ID: " + res.user_id);
+		console.log("organization ID: " + res.organization_id);
+		console.log("username: " + res.username);
+		console.log("display name: " + res.display_name);
+		options = { Authorization: 'Bearer '+conn.accessToken};
+		//redirect to google
+		resp.redirect('https://oauth-redirect.googleusercontent.com/r/salesforcebot-qjksum?code=${req.query.code}&state=true');
 	});
-	
 });
 
 
