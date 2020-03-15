@@ -182,7 +182,7 @@ app.intent('Default Welcome Intent', (conv) => {
 	}));*/
 });
 
-app.intent('Get SignIn Info', (conv, params, signin) => {    
+/*app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
@@ -195,7 +195,7 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	else {         
 		conv.ask('Something went wrong in the sign in process');       
 	}     
-}); 
+}); */
 
 app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	
