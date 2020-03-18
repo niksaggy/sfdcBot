@@ -23,7 +23,7 @@ const app = dialogflow({
 const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SALESFORCE_CONSUMER_KEY,
     clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-    redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth/callback'
+    redirectUri: 'https://sfdcadminbot.herokuapp.com/callback'
 });
 
 expApp.get('/authorize', function(req, res) {
