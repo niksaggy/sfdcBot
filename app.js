@@ -15,7 +15,6 @@ var options;
 var port = process.env.PORT || 3000;
 
 const expApp = express().use(bodyParser.json());
-
 //app instance
 const app = dialogflow({
   debug: true
@@ -24,69 +23,74 @@ const app = dialogflow({
 const oauth2 = new jsforce.OAuth2({
     clientId: process.env.SALESFORCE_CONSUMER_KEY,
     clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-    redirectUri: 'https://sfdcadminbot.herokuapp.com/getaccesstoken'
+    redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth/callback'
 });
 
-/*var oauth2 = new jsforce.OAuth2({
-  
-  clientID: process.env.SALESFORCE_CONSUMER_KEY,
-  clientSecret: process.env.SALESFORCE_CONSUMER_SECRET,
-  redirectUri : '${req.protocol}://${req.get('host')}/${process.env.REDIRECT_URI}'
-
-});*/
-
-//
-// Get authorization url and redirect to it.
-//
-
-
-
-/*conn.login(process.env.username, process.env.password, function(err, userInfo) {
-	if (err) { 
-		return console.error(err); 
-	}
-	else{
-		console.log(conn.accessToken);
-		console.log(conn.instanceUrl);
-		// logged in user property
-		console.log("User ID: " + userInfo.id);
-		console.log("Org ID: " + userInfo.organizationId);
-		options = { Authorization: 'Bearer '+conn.accessToken};
-	}
-});*/
-
-//Get authorization code
-expApp.get('/oauth2/auth', function(req, res) {
-	
+expApp.get('/authorize', function(req, res) {
+	var queryParams = req.query;
 	console.log('this is the first request: '+req);
-	res.redirect(oauth2.getAuthorizationUrl({}));
+	res.redirect(oauth2.getAuthorizationUrl({ state: queryParams.state }));
 	
 });
 
-//
-// Pass received authorization code and get access token
-//
-expApp.get('/getAccessToken', function(req,resp) {
-	
-	console.log('should be here after getting the authorization code');
-	const conn = new jsforce.Connection({ oauth2 : oauth2 });
-	console.log('req query: '+req);
-	console.log('req query code '+req.query.code);
-	
-	conn.authorize(req.query.code, function(err, userInfo) {
-		if (err) {
-            console.log('Error happened at authorization-->',err);
-			return resp.send(err.message);
-		}
-		
-		console.log("user ID: " + res.user_id);
-		console.log("organization ID: " + res.organization_id);
-		console.log("username: " + res.username);
-		console.log("display name: " + res.display_name);
-		options = { Authorization: 'Bearer '+conn.accessToken};
-		//redirect to google
-		resp.redirect('https://oauth-redirect.googleusercontent.com/r/salesforcebot-qjksum?code=${req.query.code}&state=true');
-	});
+expApp.get('/callback', function(req,resp) {
+	var queryParams = req.query;
+    console.log('Request came for access callback');
+    console.log('Query params in callback uri is ', req.query);
+    let redirectUri = `${process.env.GOOGLE_REDIRECT_URI}code=${queryParams.code}&state=${queryParams.state}`;
+    console.log('Google redirecturi is ', redirectUri);
+    res.redirect(redirectUri);
+});
+
+
+expApp.post('/token', function(req, res) {
+    console.log('Request came for accesstoken');
+    console.log('query params are-->', req.body);
+    res.setHeader('Content-Type', 'application/json');
+    if (req.body.client_id != process.env.SALESFORCE_CONSUMER_KEY) {
+        console.log('Invalid Client ID');
+        return res.status(400).send('Invalid Client ID');
+    }
+    if (req.body.client_secret != process.env.SALESFORCE_CONSUMER_SECRET) {
+        console.log('Invalid Client Ksecret');
+        return res.status(400).send('Invalid Client ID');
+    }
+    if (req.body.grant_type) {
+        if (req.body.grant_type == 'authorization_code') {
+            console.log('Fetching token from salesforce');
+            oauth2.requestToken(req.body.code, (err, tokenResponse) => {
+                if (err) {
+                    console.log(err.message);
+                    return res.status(400).json({ "error": "invalid_grant" });
+                }
+                var googleToken = {
+                    token_type: tokenResponse.token_type,
+                    access_token: tokenResponse.access_token,
+                    refresh_token: tokenResponse.refresh_token,
+                    expires_in: timeOut
+                };
+                console.log('Token response for auth code', googleToken);
+				options = tokenResponse.access_token;
+                res.status(200).json(googleToken);
+
+            });
+        } 
+		else if (req.body.grant_type == 'refresh_token') {
+            console.log('Fetching refresh token from salesforce');
+            oauth2.refreshToken(req.body.refresh_token, (err, tokenResponse) => {
+                if (err) {
+                    console.log(err.message);
+                    return res.status(400).json({ "error": "invalid_grant" });
+                }
+                var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
+				options = tokenResponse.access_token;
+                console.log('Token response for auth code', googleToken);
+                res.status(200).json(googleToken);
+            });
+        }
+    } else {
+        res.send('Invalid parameter');
+    }
 });
 
 
@@ -174,15 +178,9 @@ app.intent('Default Welcome Intent', (conv) => {
         	conv.ask('You are already signed in ');
     	}
 	
-
-	
-	/*conv.ask(new SimpleResponse({
-		speech:'Hi, how is it going? You are being guided to the login page',
-		text:'Hi, how is it going? You are being guided to the login page',
-	}));*/
 });
 
-/*app.intent('Get SignIn Info', (conv, params, signin) => {    
+app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
@@ -195,7 +193,7 @@ app.intent('Default Welcome Intent', (conv) => {
 	else {         
 		conv.ask('Something went wrong in the sign in process');       
 	}     
-}); */
+}); 
 
 app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	
