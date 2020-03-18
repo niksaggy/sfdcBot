@@ -26,14 +26,14 @@ const oauth2 = new jsforce.OAuth2({
     redirectUri: 'https://sfdcadminbot.herokuapp.com/oauth/callback'
 });
 
-expApp.get('/oauth/authorize', function(req, res) {
+expApp.get('/authorize', function(req, res) {
 	var queryParams = req.query;
 	console.log('this is the first request: '+req);
 	res.redirect(oauth2.getAuthorizationUrl({ state: queryParams.state }));
 	
 });
 
-expApp.get('/oauth/callback', function(req,resp) {
+expApp.get('/callback', function(req,resp) {
 	var queryParams = req.query;
     console.log('Request came for access callback');
     console.log('Query params in callback uri is ', req.query);
