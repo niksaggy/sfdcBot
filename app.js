@@ -37,7 +37,7 @@ expApp.get('/callback', function(req,res) {
 	var queryParams = req.query;
     console.log('Request came for access callback');
     console.log('Query params in callback uri is ', req.query);
-    let redirectUri = `${process.env.GOOGLE_REDIRECT_URI}code=${queryParams.code}&state=${queryParams.state}`;
+    let redirectUri = `${process.env.GOOGLE_REDIRECT_URI}?code=${queryParams.code}&state=${queryParams.state}`;
     console.log('Google redirecturi is ', redirectUri);
     res.redirect(redirectUri);
 });
