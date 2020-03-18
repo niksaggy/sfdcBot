@@ -33,7 +33,7 @@ expApp.get('/authorize', function(req, res) {
 	
 });
 
-expApp.get('/callback', function(req,resp) {
+expApp.get('/callback', function(req,res) {
 	var queryParams = req.query;
     console.log('Request came for access callback');
     console.log('Query params in callback uri is ', req.query);
