@@ -121,7 +121,7 @@ var oppInfo = function(oppName,fieldNames){
 var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	return new Promise((resolve,reject)=>{
 		console.log('this is the access token before calling rest service: ',conn);
-		var options = 'Bearer ' + conn.accessToken;
+		var options = 'OAuth ' + conn.accessToken;
 		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
 			if (err) {
 				console.log('error is --> ',err);
