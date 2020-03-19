@@ -13,7 +13,9 @@ const {
 
 var options;
 var timeOut = 300;
+var instanceURL = '';
 var port = process.env.PORT || 3000;
+var conn = {};
 
 const expApp = express().use(bodyParser.json());
 expApp.use(bodyParser.urlencoded());
@@ -68,6 +70,8 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
+		instanceURL = tokenResponse.instanceUrl;
+		    console.log(instanceUrl);
                 var googleToken = {
                     token_type: tokenResponse.token_type,
                     access_token: tokenResponse.access_token,
@@ -114,14 +118,16 @@ var oppInfo = function(oppName,fieldNames){
 };
 
 
-var createTask = function(oppName,taskSubject,taskPriority,conFName){
+var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	return new Promise((resolve,reject)=>{
-		console.log('this is the access token before calling rest service: '+JSON.stringify(options));
-		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
+		console.log('this is the access token before calling rest service: ',conn);
+		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,function(err, res){
 			if (err) {
+				console.log('error is --> ',err);
 				reject(err);
 			}
 			else{
+				console.log('res is --> ',res);
 				resolve(res);
 			}
 		});
@@ -189,7 +195,7 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
-		const access = conv.user.access.token   
+		const access = conv.user.accessToken   
 		options = { Authorization: 'Bearer '+access};
 		console.log('access token: ' + access);
 		console.log('this is used for calling webservices in salesforce : ' + options);
@@ -222,8 +228,11 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
 	const conFName = conv.parameters['contactFirstName'];
-	
-	return createTask(opName,tskSbj,tskPr,conFName).then((resp) => {
+	conn = new jsforce.Connection({
+	  instanceUrl : instanceURL,
+	  accessToken : conv.user.accessToken
+	});
+	return createTask(opName,tskSbj,tskPr,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
