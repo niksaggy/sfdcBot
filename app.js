@@ -48,6 +48,7 @@ expApp.post('/token', function(req, res) {
     console.log('Request came for accesstoken');
     
     console.log('query params are-->', req.body);
+	console.log('req query-->', req.query);
 	
     res.setHeader('Content-Type', 'application/json');
     if (req.body.client_id != process.env.SALESFORCE_CONSUMER_KEY) {
