@@ -13,7 +13,7 @@ const {
 
 var options;
 var timeOut = 300;
-var instanceURL = '';
+
 var port = process.env.PORT || 3000;
 var conn = {};
 
@@ -70,8 +70,7 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
-		instanceURL = tokenResponse.instanceUrl;
-		    console.log(instanceUrl);
+		
                 var googleToken = {
                     token_type: tokenResponse.token_type,
                     access_token: tokenResponse.access_token,
@@ -91,8 +90,7 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
-		    instanceURL = tokenResponse.instanceUrl;
-		    console.log(instanceURL);
+		    
                 var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
 				
                 console.log('Token response for auth code', googleToken);
@@ -231,7 +229,7 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	const tskPr = conv.parameters['taskPriority'];
 	const conFName = conv.parameters['contactFirstName'];
 	conn = new jsforce.Connection({
-	  instanceUrl : instanceURL,
+	  instanceUrl : process.env.INSTANCE_URL,
 	  accessToken : conv.user.accessToken
 	});
 	return createTask(opName,tskSbj,tskPr,conFName,conn).then((resp) => {
