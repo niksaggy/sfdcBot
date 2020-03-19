@@ -91,6 +91,8 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
+		    instanceURL = tokenResponse.instanceUrl;
+		    console.log(instanceUrl);
                 var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
 				
                 console.log('Token response for auth code', googleToken);
