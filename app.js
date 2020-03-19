@@ -45,10 +45,9 @@ expApp.get('/callback', function(req,res) {
 
 expApp.post('/token', function(req, res) {
     console.log('Request came for accesstoken');
-    console.log('query params are-->', req);
+    
     console.log('query params are-->', req.body);
-	console.log('query params are-->', req.body.client_id);
-	console.log('process env client id -->', process.env.SALESFORCE_CONSUMER_KEY);
+	
     res.setHeader('Content-Type', 'application/json');
     if (req.body.client_id != process.env.SALESFORCE_CONSUMER_KEY) {
         console.log('Invalid Client ID');
