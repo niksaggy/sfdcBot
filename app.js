@@ -72,7 +72,7 @@ expApp.post('/token', function(req, res) {
                     expires_in: timeOut
                 };
                 console.log('Token response for auth code', googleToken);
-				options = tokenResponse.access_token;
+				
                 res.status(200).json(googleToken);
 
             });
@@ -85,7 +85,7 @@ expApp.post('/token', function(req, res) {
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
                 var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
-				options = tokenResponse.access_token;
+				
                 console.log('Token response for auth code', googleToken);
                 res.status(200).json(googleToken);
             });
