@@ -45,7 +45,7 @@ expApp.get('/callback', function(req,res) {
 
 expApp.post('/token', function(req, res) {
     console.log('Request came for accesstoken');
-    console.log('request json as a string ' + JSON.stringify(req));
+    
     console.log('query params are-->', req.body);
 	
     res.setHeader('Content-Type', 'application/json');
