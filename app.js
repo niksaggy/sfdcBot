@@ -12,7 +12,7 @@ const {
 } = require('actions-on-google');
 
 var options;
-var timeOut = 300;
+var timeOut = 3600;
 
 var port = process.env.PORT || 3000;
 var conn = {};
