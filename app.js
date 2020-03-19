@@ -12,6 +12,7 @@ const {
 } = require('actions-on-google');
 
 var options;
+var timeOut = 300;
 var port = process.env.PORT || 3000;
 
 const expApp = express().use(bodyParser.json());
