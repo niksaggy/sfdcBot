@@ -15,6 +15,7 @@ var options;
 var port = process.env.PORT || 3000;
 
 const expApp = express().use(bodyParser.json());
+expApp.use(bodyParser.urlencoded());
 //app instance
 const app = dialogflow({
   debug: true
