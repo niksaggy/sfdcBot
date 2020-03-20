@@ -71,6 +71,7 @@ expApp.post('/token', function(req, res) {
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
 				console.log('Token respons: ',tokenResponse);
+				
                 var googleToken = {
                     token_type: tokenResponse.token_type,
                     access_token: tokenResponse.access_token,
@@ -78,7 +79,7 @@ expApp.post('/token', function(req, res) {
                     expires_in: timeOut
                 };
                 console.log('Token response for auth code', googleToken);
-				
+				options = { Authorization: 'Bearer '+tokenResponse.access_token};
                 res.status(200).json(googleToken);
 
             });
@@ -94,6 +95,7 @@ expApp.post('/token', function(req, res) {
                 var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
 				
                 console.log('Token response for auth code', googleToken);
+				options = { Authorization: 'Bearer '+tokenResponse.access_token};
                 res.status(200).json(googleToken);
             });
         }
@@ -121,7 +123,8 @@ var oppInfo = function(oppName,fieldNames){
 var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	return new Promise((resolve,reject)=>{
 		console.log('this is the js force connerction instance opened: ',conn);
-		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,function(err, res){
+		console.log('this contains the access token to be used in calling the service on salesforce: ',options);
+		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
 			if (err) {
 				console.log('error is --> ',err);
 				reject(err);
@@ -229,9 +232,9 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
 	const conFName = conv.parameters['contactFirstName'];
+	console.log('Instance URL as stored in heroku process variable: ',process.env.INSTANCE_URL);
 	conn = new jsforce.Connection({
-	  instanceUrl : process.env.INSTANCE_URL,
-	  accessToken : conv.user.accessToken
+	  instanceUrl : process.env.INSTANCE_URL
 	});
 	return createTask(opName,tskSbj,tskPr,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
