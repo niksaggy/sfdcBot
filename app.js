@@ -70,7 +70,7 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
-		
+				console.log('Token respons: ',tokenResponse);
                 var googleToken = {
                     token_type: tokenResponse.token_type,
                     access_token: tokenResponse.access_token,
@@ -90,7 +90,7 @@ expApp.post('/token', function(req, res) {
                     console.log(err.message);
                     return res.status(400).json({ "error": "invalid_grant" });
                 }
-		    
+				console.log('Token response in refresh token: ',tokenResponse);
                 var googleToken = { token_type: tokenResponse.token_type, access_token: tokenResponse.access_token, expires_in: timeOut };
 				
                 console.log('Token response for auth code', googleToken);
@@ -120,9 +120,8 @@ var oppInfo = function(oppName,fieldNames){
 
 var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	return new Promise((resolve,reject)=>{
-		console.log('this is the access token before calling rest service: ',conn);
-		var options = 'OAuth ' + conn.accessToken;
-		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,options,function(err, res){
+		console.log('this is the js force connerction instance opened: ',conn);
+		conn.apex.get("/createTask?oppName="+oppName+"&taskSubject="+taskSubject+"&taskPriority="+taskPriority+"&contactFirstName="+conFName,function(err, res){
 			if (err) {
 				console.log('error is --> ',err);
 				reject(err);
@@ -197,8 +196,8 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
 		const access = conv.user.accessToken   
-		options = { Authorization: 'Bearer '+access};
 		console.log('access token: ' + access);
+		options = { Authorization: 'Bearer '+access};
 		console.log('this is used for calling webservices in salesforce : ' + options);
 		conv.ask('Hola, thanks for signing in! What do you want to do next?')       ;
 	} 
@@ -224,6 +223,7 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 });
 
 app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority,contactFirstName} ) => {
+	console.log('conv: ',conv);
 	console.log('Access token from conv inside intent: ',conv.user.accessToken);
 	const opName = conv.parameters['oppName'];
 	const tskSbj = conv.parameters['taskSubject'];
