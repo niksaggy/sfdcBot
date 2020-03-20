@@ -224,7 +224,7 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 });
 
 app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority,contactFirstName} ) => {
-	
+	console.log('Access token from conv inside intent: ',conv.user.accessToken);
 	const opName = conv.parameters['oppName'];
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
