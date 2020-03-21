@@ -185,7 +185,7 @@ var updateOppty = function(fieldNames,fieldValues,oppName){
 app.intent('Default Welcome Intent', (conv) => {
 	
 	console.log('Request came for account link flow start');	
-    	if(!conv.user.accessToken){
+    	if(!conv.user.access.token){
       		conv.ask(new SignIn());
     	}
     	else{
@@ -198,9 +198,6 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	console.log('Sign in info Intent');    
 	console.log('Sign in content-->',signin);       
 	if (signin.status === 'OK') {         
-		const access = conv.user.accessToken   
-		console.log('access token: ' + access);
-		options = { Authorization: 'Bearer '+access};
 		console.log('this is used for calling webservices in salesforce : ' + options);
 		conv.ask('Hola, thanks for signing in! What do you want to do next?')       ;
 	} 
@@ -227,7 +224,7 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 
 app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority,contactFirstName} ) => {
 	console.log('conv: ',conv);
-	console.log('Access token from conv inside intent: ',conv.user.accessToken);
+	console.log('Access token from conv inside intent: ',conv.user.access.token);
 	const opName = conv.parameters['oppName'];
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
