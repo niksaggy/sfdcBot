@@ -235,7 +235,7 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	console.log('Instance URL as stored in heroku process variable: ',process.env.INSTANCE_URL);
 	conn = new jsforce.Connection({
 	  instanceUrl : process.env.INSTANCE_URL,
-	  accessToken : conv.user.accessToken
+	  accessToken : conv.user.access.token
 	});
 	return createTask(opName,tskSbj,tskPr,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
