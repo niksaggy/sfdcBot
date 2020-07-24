@@ -292,8 +292,10 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 
 app.intent('Update Opportunity - yes', (conv) => {
 	
-	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName'];
+	const cntxt = conv.contexts.get('updateopportunity-followup');
+	
+	const opName = conv.contexts.get('updateopportunity-followup').parameters['oppName'];
+	const conFName = conv.contexts.get('updateopportunity-followup').parameters['contactFirstName'];
 	
 	conn = new jsforce.Connection({
 	  instanceUrl : process.env.INSTANCE_URL,
