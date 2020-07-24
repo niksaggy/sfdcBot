@@ -151,21 +151,6 @@ var logMeeting = function(meetingNotes,oppName,conFName,conn){
 	});
 };
 
-var logMeetingToday = function(meetingNotes,oppName,conFName,conn){
-	return new Promise((resolve,reject)=>{
-		var followUpLtrTdy = 'Yes';
-		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName+"&followUpLater="+followUpLtrTdy,options,function(err, res){
-			if (err) {
-				reject(err);
-			}
-			else{
-				resolve(res);
-			}
-		});
-	});
-};
-
-
 var updateOppty = function(fieldNames,fieldValues,oppName,conn){
 	return new Promise((resolve,reject)=>{
 		
@@ -179,7 +164,6 @@ var updateOppty = function(fieldNames,fieldValues,oppName,conn){
 		});
 	});
 };
-
 
 
 app.intent('Default Welcome Intent', (conv) => {
@@ -280,30 +264,6 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 	});
 	
 	return updateOppty(fldNames,fldVal,opName,conn).then((resp) => {
-		conv.ask(new SimpleResponse({
-			speech:resp,
-			text:resp,
-		}));
-		
-		conv.ask('Would you like to setup a follow up meeting later today');
-  		conv.ask(new Suggestions('Yes', 'No'));
-	});
-});
-
-app.intent('Update Opportunity - yes', (conv) => {
-	
-	const cntxt = conv.contexts.get('updateopportunity-followup');
-	console.log('test context --> '+cntxt);
-	
-	const opName = conv.contexts.get('updateopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('updateopportunity-followup').parameters['contactFirstName'];
-	
-	conn = new jsforce.Connection({
-	  instanceUrl : process.env.INSTANCE_URL,
-	  accessToken : conv.user.access.token
-	});
-	
-	return logMeetingToday('follow up meeting',opName,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
