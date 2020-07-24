@@ -293,6 +293,7 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 app.intent('Update Opportunity - yes', (conv) => {
 	
 	const cntxt = conv.contexts.get('updateopportunity-followup');
+	console.log('test context --> '+cntxt);
 	
 	const opName = conv.contexts.get('updateopportunity-followup').parameters['oppName'];
 	const conFName = conv.contexts.get('updateopportunity-followup').parameters['contactFirstName'];
