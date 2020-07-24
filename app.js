@@ -105,7 +105,7 @@ expApp.post('/token', function(req, res) {
 });
 
 
-var oppInfo = function(oppName,fieldNames){
+var oppInfo = function(oppName,fieldNames,conn){
 	return new Promise((resolve,reject)=>{
 		console.log('**options** ' +options);
 		conn.apex.get("/getOpptyInfo?oppName="+oppName+"&fieldNames="+fieldNames,options,function(err, res){
@@ -137,7 +137,7 @@ var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	});
 };
 
-var logMeeting = function(meetingNotes,oppName,conFName){
+var logMeeting = function(meetingNotes,oppName,conFName,conn){
 	return new Promise((resolve,reject)=>{
 		
 		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName,options,function(err, res){
@@ -151,7 +151,7 @@ var logMeeting = function(meetingNotes,oppName,conFName){
 	});
 };
 
-var logMeetingToday = function(meetingNotes,oppName,conFName){
+var logMeetingToday = function(meetingNotes,oppName,conFName,conn){
 	return new Promise((resolve,reject)=>{
 		var followUpLtrTdy = 'Yes';
 		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName+"&followUpLater="+followUpLtrTdy,options,function(err, res){
@@ -166,7 +166,7 @@ var logMeetingToday = function(meetingNotes,oppName,conFName){
 };
 
 
-var updateOppty = function(fieldNames,fieldValues,oppName){
+var updateOppty = function(fieldNames,fieldValues,oppName,conn){
 	return new Promise((resolve,reject)=>{
 		
 		conn.apex.get("/updateOpptyInfo?oppName="+oppName+"&fieldNames="+fieldNames+"&fieldValues="+fieldValues,options,function(err, res){
@@ -214,7 +214,13 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	console.log('**conv parameters oppName** ' +opName);
 	console.log('**conv parameters fieldNames** ' +fldNames);
 	
-	return oppInfo(opName,fldNames).then((resp) => {
+	
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	return oppInfo(opName,fldNames,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
@@ -249,7 +255,12 @@ app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
 	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
 	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
 	
-	return logMeeting(meetingNt,opName,conFName).then((resp) => {
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	return logMeeting(meetingNt,opName,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
@@ -263,7 +274,12 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 	const fldVal= conv.parameters['fieldValues'];
 	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
 	
-	return updateOppty(fldNames,fldVal,opName).then((resp) => {
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	return updateOppty(fldNames,fldVal,opName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
@@ -277,9 +293,14 @@ app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
 app.intent('Update Opportunity - yes', (conv) => {
 	
 	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
+	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName'];
 	
-	return logMeetingToday('follow up meeting',opName,conFName).then((resp) => {
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	return logMeetingToday('follow up meeting',opName,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
