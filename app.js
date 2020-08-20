@@ -232,7 +232,7 @@ app.intent('Create Task on Opportunity', (conv) => {
 	});
 });
 
-app.intent('Log Meeting Notes', (conv) => {
+app.intent('Log Meeting Note', (conv) => {
 	
 	const meetingNt = conv.parameters['meetingNotes'];
 	const opName = conv.parameters['oppName'];
