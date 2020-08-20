@@ -137,10 +137,10 @@ var createTask = function(oppName,taskSubject,taskPriority,conFName,conn){
 	});
 };
 
-var logMeeting = function(meetingNotes,oppName,conFName,conn){
+var logMeeting = function(meetingNotes,oppName,conn){
 	return new Promise((resolve,reject)=>{
 		
-		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes+"&contactFirstName="+conFName,options,function(err, res){
+		conn.apex.get("/logMeeting?oppName="+oppName+"&meetingNotes="+meetingNotes,options,function(err, res){
 			if (err) {
 				reject(err);
 			}
@@ -212,18 +212,18 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	});
 });
 
-app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriority,contactFirstName} ) => {
-	console.log('conv: ',conv);
-	console.log('Access token from conv inside intent: ',conv.user.access.token);
+app.intent('Create Task on Opportunity', (conv) => {
+	
 	const opName = conv.parameters['oppName'];
 	const tskSbj = conv.parameters['taskSubject'];
 	const tskPr = conv.parameters['taskPriority'];
 	const conFName = conv.parameters['contactFirstName'];
-	console.log('Instance URL as stored in heroku process variable: ',process.env.INSTANCE_URL);
+	
 	conn = new jsforce.Connection({
 	  instanceUrl : process.env.INSTANCE_URL,
 	  accessToken : conv.user.access.token
 	});
+	
 	return createTask(opName,tskSbj,tskPr,conFName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
@@ -232,19 +232,17 @@ app.intent('Create Task on Opportunity', (conv, {oppName,taskSubject,taskPriorit
 	});
 });
 
-app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
+app.intent('Log Meeting Notes', (conv) => {
 	
 	const meetingNt = conv.parameters['meetingNotes'];
-	console.log('*** con context ** '+conv.contexts);
-	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
-	const conFName = conv.contexts.get('createtaskonopportunity-followup').parameters['contactFirstName']
+	const opName = conv.parameters['oppName'];
 	
 	conn = new jsforce.Connection({
 	  instanceUrl : process.env.INSTANCE_URL,
 	  accessToken : conv.user.access.token
 	});
 	
-	return logMeeting(meetingNt,opName,conFName,conn).then((resp) => {
+	return logMeeting(meetingNt,opName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
@@ -252,11 +250,11 @@ app.intent('Log Meeting Notes', (conv, {meetingNotes} ) => {
 	});
 });
 
-app.intent('Update Opportunity', (conv, {fieldNames,fieldValues} ) => {
+app.intent('Update Opportunity Info', (conv) => {
 	
+	const opName = conv.parameters['oppName'];
 	const fldNames = conv.parameters['fieldNames'];
 	const fldVal= conv.parameters['fieldValues'];
-	const opName = conv.contexts.get('createtaskonopportunity-followup').parameters['oppName'];
 	
 	conn = new jsforce.Connection({
 	  instanceUrl : process.env.INSTANCE_URL,
