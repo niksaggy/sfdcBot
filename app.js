@@ -208,9 +208,14 @@ app.intent('Get Opportunity Info', async (conv, {oppName,fieldNames} ) => {
 	console.log('**conv parameters oppName** ' +opName);
 	console.log('**conv parameters fieldNames** ' +fldNames);
 	
-	const connectionReq=reqInstantiation(conv);
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	//const connectionReq=reqInstantiation(conv);
 
-    const resp=await oppInfo(meetingNt,opName,connectionReq);
+    const resp=await oppInfo(meetingNt,opName,conn);
 	conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
