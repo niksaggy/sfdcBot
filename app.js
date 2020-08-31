@@ -165,8 +165,18 @@ var updateOppty = function(fieldNames,fieldValues,oppName,conn){
 	});
 };
 
-
+function reqInstantiation(conv)
+{
+	conn = new jsforce.Connection({
+	  instanceUrl : process.env.INSTANCE_URL,
+	  accessToken : conv.user.access.token
+	});
+	
+	return conn;
+	
+}
 app.intent('Default Welcome Intent', (conv) => {
+	
 	
 	console.log('Request came for account link flow start');	
     	if(!conv.user.access.token){
@@ -190,7 +200,7 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 	}     
 }); 
 
-app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
+app.intent('Get Opportunity Info', async (conv, {oppName,fieldNames} ) => {
 	
 	const opName = conv.parameters['oppName'];
 	const fldNames = conv.parameters['fieldNames'];
@@ -198,18 +208,13 @@ app.intent('Get Opportunity Info', (conv, {oppName,fieldNames} ) => {
 	console.log('**conv parameters oppName** ' +opName);
 	console.log('**conv parameters fieldNames** ' +fldNames);
 	
-	
-	conn = new jsforce.Connection({
-	  instanceUrl : process.env.INSTANCE_URL,
-	  accessToken : conv.user.access.token
-	});
-	
-	return oppInfo(opName,fldNames,conn).then((resp) => {
-		conv.ask(new SimpleResponse({
+	const connectionReq=reqInstantiation(conv);
+
+    const resp=await oppInfo(meetingNt,opName,connectionReq);
+	conv.ask(new SimpleResponse({
 			speech:resp,
 			text:resp,
 		}));
-	});
 });
 
 app.intent('Create Task on Opportunity', (conv) => {
@@ -232,7 +237,9 @@ app.intent('Create Task on Opportunity', (conv) => {
 	});
 });
 
-app.intent('Log Meeting Note', (conv) => {
+
+
+app.intent('Log Meeting Note', async (conv) => {
 	
 	const meetingNt = conv.parameters['meetingNotes'];
 	const opName = conv.parameters['oppName'];
@@ -241,7 +248,7 @@ app.intent('Log Meeting Note', (conv) => {
 	  instanceUrl : process.env.INSTANCE_URL,
 	  accessToken : conv.user.access.token
 	});
-	
+
 	return logMeeting(meetingNt,opName,conn).then((resp) => {
 		conv.ask(new SimpleResponse({
 			speech:resp,
