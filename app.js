@@ -86,6 +86,7 @@ expApp.post('/token', function(req, res) {
         } 
 		else if (req.body.grant_type == 'refresh_token') {
             console.log('Fetching refresh token from salesforce');
+	    console.log(JSON.stringify(req.body));		
             oauth2.refreshToken(req.body.refresh_token, (err, tokenResponse) => {
                 if (err) {
                     console.log(err.message);
@@ -201,7 +202,7 @@ app.intent('Get SignIn Info', (conv, params, signin) => {    
 }); 
 
 app.intent('Get Opportunity Info', async (conv, {oppName,fieldNames} ) => {
-	
+	console.log(JSON.stringify(conv));
 	const opName = conv.parameters['oppName'];
 	const fldNames = conv.parameters['fieldNames'];
 	
